@@ -55,7 +55,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://www.server.com/Azure/master/mysql-server-ubuntu",
+      "defaultValue": "https://raw.githubusercontent.com/unixboy/Azure/master",
       "metadata": {
         "description": " template folder."
       }
