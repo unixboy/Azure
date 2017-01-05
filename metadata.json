@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Yar MySQL Server",
+  "description": " It creates an Ubuntu VM, silent install of MySQL server, version:5.6",
+  "summary": "Deploy a MySQL Server",
+  "githubUsername": "unixboy",
+  "dateUpdated": "2017-01-04"
+}
