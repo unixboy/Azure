@@ -1,6 +1,7 @@
 #!/bin/bash
 
 mysqlPassword=$1
+export DEBIAN_FRONTEND=noninteractive
 
 MOUNTPOINT="/datadrive"
 RAIDCHUNKSIZE=512
@@ -153,17 +154,23 @@ configure_mysql() {
     useradd -r -g mysql mysql
     chmod o+x "${MOUNTPOINT}/mysql"
     chown -R mysql:mysql "${MOUNTPOINT}/mysql"
+export DEBIAN_FRONTEND=noninteractive
+sudo apt-get update
+echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selectionssudo 
+sudo apt-get -y install mysql-server-5.6
+
 
     if [ $iscentos -eq 0 ];
     then
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-sudo apt-get update
+#sudo apt-get update
 #export DEBIAN_FRONTEND=noninteractive
 #echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
 #echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
-sudo apt-get -y install mysql-server-5.6
+#sudo apt-get update
 #sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
 
 #sudo service mysql restart
