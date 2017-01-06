@@ -159,18 +159,39 @@ configure_mysql() {
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-sudo apt-get update
-export DEBIAN_FRONTEND=noninteractive
+#sudo apt-get update
+#export DEBIAN_FRONTEND=noninteractive
+#echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+#echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+#sudo apt-get -y install mysql-server-5.6
+#sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
+
+#sudo service mysql restart
+#echo install_mysql_ubuntu
+    fi
+
+
+install_mysqldb() {
+    /etc/init.d/mysql status
+    if [ ${?} -eq 0 ];
+    then
+       return
+    fi
+
+   sudo apt-get update
+#export DEBIAN_FRONTEND=noninteractive
 #echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
 #echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
 sudo apt-get -y install mysql-server-5.6
 #sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
 
 #sudo service mysql restart
-echo install_mysql_ubuntu
+#echo install_mysql_ubuntu
     fi
 
-    create_mycnf
+
+
+#    create_mycnf
 #    /etc/init.d/mysql restart
 #    mysql_secret=$(awk '/password/{print $NF}' ${HOME}/.mysql_secret)
 #    mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
