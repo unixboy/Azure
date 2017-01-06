@@ -159,7 +159,15 @@ configure_mysql() {
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-        install_mysql_ubuntu
+sudo apt-get update
+export DEBIAN_FRONTEND=noninteractive
+#echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+#echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+sudo apt-get -y install mysql-server-5.6
+#sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
+
+#sudo service mysql restart
+echo install_mysql_ubuntu
     fi
 
     create_mycnf
@@ -168,7 +176,7 @@ configure_mysql() {
 #    mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
 if [ ${NODEID} -eq 1 ];
 then
-echo mysql
+echo mysql-------mysql
 fi
 }
 
@@ -181,14 +189,7 @@ else
     configure_disks
     configure_mysql
       
-sudo apt-get update
-export DEBIAN_FRONTEND=noninteractive
-echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
-echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
-sudo apt-get -y install mysql-server-5.6
-sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
 
-sudo service mysql restart
         #yum -y install microsoft-hyper-v
 #       echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
 fi
