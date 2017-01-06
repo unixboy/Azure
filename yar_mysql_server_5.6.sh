@@ -180,7 +180,12 @@ then
 else
     configure_disks
     configure_mysql
-        #yum -y erase hypervkvpd.x86_64
+      
+sudo apt-get update
+echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+sudo apt-get -y install mysql-server-5.6
+sudo service mysql restart
         #yum -y install microsoft-hyper-v
 #       echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
 fi
