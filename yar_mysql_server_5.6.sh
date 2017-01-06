@@ -184,10 +184,10 @@ sudo apt-get -y install mysql-server-5.6
 #    /etc/init.d/mysql restart
 #    mysql_secret=$(awk '/password/{print $NF}' ${HOME}/.mysql_secret)
 #    mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
-if [ ${NODEID} -eq 1 ];
-then
-echo mysql-------mysql
-fi
+#if [ ${NODEID} -eq 1 ];
+#then
+#echo mysql-------mysql
+#fi
 }
 
 check_os
@@ -199,14 +199,7 @@ else
     configure_disks
     configure_mysql
       
-export DEBIAN_FRONTEND="noninteractive"
-
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password rootpw"
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password rootpw"
-
-sudo apt-get install -y mysql-server-5.6
-
-mysql_secure_installation
+ 
         #yum -y install microsoft-hyper-v
 #       echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
 fi
