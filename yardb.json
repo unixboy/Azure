@@ -14,7 +14,7 @@
         "description": "Password for the Virtual Machine."
       }
     },
-    "mysqlPassword": {
+    "mysqlRootPassword": {
       "type": "securestring",
       "metadata": {
         "description": "Password for Robin and John."
