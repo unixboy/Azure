@@ -1,13 +1,6 @@
  #!/bin/bash
 
 mysqlPassword=$1
-NODEID=${1}
-NODEADDRESS=${2}
-MYCNFTEMPLATE=${3}
-RPLPWD=${4}
-ROOTPWD=${5}
-PROBEPWD=${6}
-MASTERIP=${7}
 
 MOUNTPOINT="/data"
 RAIDCHUNKSIZE=512
@@ -160,108 +153,6 @@ configure_network() {
     fi
 }
 
-create_mycnf() {
-    wget "${MYCNFTEMPLATE}" -O /etc/my.cnf
-    sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/my.cnf
-    sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
-    sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
-}
-
-install_mysql_ubuntu() {
-    dpkg -s mysql-5.6
-    if [ ${?} -eq 0 ];
-    then
-        return
-    fi
-    echo "installing mysql"
-    apt-get update
-    export DEBIAN_FRONTEND=noninteractive
-	apt-get install -y mysql-server-5.6
-	chown -R mysql:mysql "${MOUNTPOINT}/mysql/mysql"
-	apt-get install -y mysql-server-5.6
-	wget http://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python_2.1.3-1ubuntu14.04_all.deb
-	dpkg -i mysql-connector-python_2.1.3-1ubuntu14.04_all.deb
-	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1ubuntu14.04_all.deb
-    dpkg -i mysql-utilities_1.6.4-1ubuntu14.04_all.deb
-    apt-get -y install xinetd
-}
-
-create_mysql_probe() {
-if [ ${NODEID} -eq 1 ];
-then
-# create a probe user with minimum privilege
-    mysql -u root -p"${ROOTPWD}" <<EOF
-CREATE USER 'probeuser'@'%' IDENTIFIED BY '${PROBEPWD}';
-GRANT SELECT ON *.* TO 'probeuser'@'%';
-FLUSH PRIVILEGES;
-EOF
-fi
-
-# create a probe script
-    cat <<EOF >/usr/bin/mysqlprobe
-#!/bin/bash
- 
-MYSQL_HOST="${NODEADDRESS}"
-MYSQL_USERNAME="probeuser"
-MYSQL_PASSWORD='${PROBEPWD}'
-
-ERROR_MSG=\`/usr/bin/mysqladmin --host=\${MYSQL_HOST} --port=3306 --user=\${MYSQL_USERNAME} --password=\${MYSQL_PASSWORD} status 2>/dev/null\`
-#ERROR_MSG=\`/usr/bin/mysql --host=\${MYSQL_HOST} --port=3306 --user=\${MYSQL_USERNAME} --password=\${MYSQL_PASSWORD} -e "show databases;" 2>/dev/null\`
-
-if [ "\$ERROR_MSG" != "" ]
-then
-        # mysql is fine, return http 200
-        echo -en "HTTP/1.1 200 OK\r\n"
-        echo -en "Content-Type: Content-Type: text/plain\r\n"
-        echo -en "Connection: close\r\n"
-        echo -en "Content-Length: 19\r\n"
-        echo -en "\r\n"
-        echo -en "MySQL is running.\r\n"
-        sleep 0.1
-        exit 0
-else
-        # mysql is down, return http 503
-        echo -en "HTTP/1.1 503 Service Unavailable\r\n"
-        echo -en "Content-Type: Content-Type: text/plain\r\n"
-        echo -en "Connection: close\r\n"
-        echo -en "Content-Length: 16\r\n"
-        echo -en "\r\n"
-        echo -en "MySQL is down.\r\n"
-        sleep 0.1
-        exit 1
-fi
-EOF
-
-chmod 755 /usr/bin/mysqlprobe
-
-# create a http service that runs the script
-    cat <<EOF >/etc/xinetd.d/mysqlprobe
-# default: on
-# description: mysqlprobe
-service mysqlprobe
-{
-        disable = no
-        flags = REUSE
-        socket_type = stream
-        port = 9200
-        wait = no
-        user = nobody
-        server = /usr/bin/mysqlprobe
-        log_on_failure += USERID
-        only_from = 0.0.0.0/0
-        per_source = UNLIMITED
-}
-EOF
-
-# add the service to xinet
-    grep "mysqlprobe" /etc/services >/dev/null 2>&1
-    if [ ${?} -ne 0 ];
-    then
-        sed -i "\$amysqlprobe  9200\/tcp  #mysqlprobe" /etc/services
-    fi
-    service xinetd restart
-}
-
 configure_mysql() {
     /etc/init.d/mysql status
     if [ ${?} -eq 0 ];
@@ -279,27 +170,48 @@ configure_mysql() {
 
     if [ $iscentos -eq 0 ];
     then
-        install_mysql_centos
+ 
+sudo apt-get update
+#no password prompt while installing mysql server
+#export DEBIAN_FRONTEND=noninteractive
+
+#another way of installing mysql server in a Non-Interactive mode
+echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+
+#install mysql-server 5.6
+sudo apt-get -y install mysql-server-5.6
+
+install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-        install_mysql_ubuntu
+        sudo apt-get update
+#no password prompt while installing mysql server
+#export DEBIAN_FRONTEND=noninteractive
+
+#another way of installing mysql server in a Non-Interactive mode
+echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
+echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+
+#install mysql-server 5.6
+sudo apt-get -y install mysql-server-5.6
+
     fi
 
-    create_mycnf
+ #   create_mycnf
     /etc/init.d/mysql restart
-    mysql_secret=$(awk '/password/{print $NF}' ${HOME}/.mysql_secret)
-    mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
+ #   mysql_secret=$(awk '/password/{print $NF}' ${HOME}/.mysql_secret)
+ #   mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
 if [ ${NODEID} -eq 1 ];
 then
-    mysql -u root -p"${ROOTPWD}" <<EOF
-SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('${ROOTPWD}');
-SET PASSWORD FOR 'root'@'::1' = PASSWORD('${ROOTPWD}');
-CREATE USER 'admin'@'%' IDENTIFIED BY '${ROOTPWD}';
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' with grant option;
-FLUSH PRIVILEGES;
-EOF
+#    mysql -u root -p"${ROOTPWD}" <<EOF
+#SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('${ROOTPWD}');
+#SET PASSWORD FOR 'root'@'::1' = PASSWORD('${ROOTPWD}');
+#CREATE USER 'admin'@'%' IDENTIFIED BY '${ROOTPWD}';
+#GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' with grant option;
+#FLUSH PRIVILEGES;
+#EOF
 fi
-    create_mysql_probe
 }
 
 check_os
