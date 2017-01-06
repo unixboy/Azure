@@ -1,7 +1,6 @@
 #!/bin/bash
 
-mysqlPassword=$1
-export DEBIAN_FRONTEND=noninteractive
+mysqlPassword=$1 
 
 MOUNTPOINT="/datadrive"
 RAIDCHUNKSIZE=512
@@ -154,7 +153,7 @@ configure_mysql() {
     useradd -r -g mysql mysql
     chmod o+x "${MOUNTPOINT}/mysql"
     chown -R mysql:mysql "${MOUNTPOINT}/mysql"
-export DEBIAN_FRONTEND=noninteractive
+ 
 sudo apt-get update
 echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections
 echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections
