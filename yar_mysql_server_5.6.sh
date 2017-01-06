@@ -156,8 +156,8 @@ configure_mysql() {
     chown -R mysql:mysql "${MOUNTPOINT}/mysql"
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
-echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
-echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selectionssudo 
+echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections
+echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections
 sudo apt-get -y install mysql-server-5.6
 
 
@@ -166,17 +166,17 @@ sudo apt-get -y install mysql-server-5.6
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-#sudo apt-get update
+echo installing #sudo apt-get update
 #export DEBIAN_FRONTEND=noninteractive
-#echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
-#echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
+#echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections
+#echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections
 #sudo apt-get update
 #sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
 
 #sudo service mysql restart
 #echo install_mysql_ubuntu
-    fi
- 
+   fi
+
 
 
 
@@ -184,10 +184,10 @@ sudo apt-get -y install mysql-server-5.6
 #    /etc/init.d/mysql restart
 #    mysql_secret=$(awk '/password/{print $NF}' ${HOME}/.mysql_secret)
 #    mysqladmin -u root --password=${mysql_secret} password ${ROOTPWD}
-#if [ ${NODEID} -eq 1 ];
-#then
-#echo mysql-------mysql
-#fi
+if [ $iscentos -eq 0 ];
+then
+echo mysql-------mysql
+fi
 }
 
 check_os
@@ -198,8 +198,8 @@ then
 else
     configure_disks
     configure_mysql
-      
- 
+
+
         #yum -y install microsoft-hyper-v
 #       echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
 fi
