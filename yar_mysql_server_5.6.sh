@@ -159,26 +159,7 @@ configure_mysql() {
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-#sudo apt-get update
-#export DEBIAN_FRONTEND=noninteractive
-#echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
-#echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
-#sudo apt-get -y install mysql-server-5.6
-#sudo mysqladmin -u root password "$mysqlPassword"   #without -p means here the initial password is empty
-
-#sudo service mysql restart
-#echo install_mysql_ubuntu
-    fi
-
-
-install_mysqldb() {
-    /etc/init.d/mysql status
-    if [ ${?} -eq 0 ];
-    then
-       return
-    fi
-
-   sudo apt-get update
+sudo apt-get update
 #export DEBIAN_FRONTEND=noninteractive
 #echo "mysql-server-5.6 mysql-server/root_password password $mysqlPassword" | sudo debconf-set-selections 
 #echo "mysql-server-5.6 mysql-server/root_password_again password $mysqlPassword" | sudo debconf-set-selections 
@@ -188,6 +169,7 @@ sudo apt-get -y install mysql-server-5.6
 #sudo service mysql restart
 #echo install_mysql_ubuntu
     fi
+ 
 
 
 
@@ -210,7 +192,14 @@ else
     configure_disks
     configure_mysql
       
+export DEBIAN_FRONTEND="noninteractive"
 
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password rootpw"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password rootpw"
+
+sudo apt-get install -y mysql-server-5.6
+
+mysql_secure_installation
         #yum -y install microsoft-hyper-v
 #       echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
 fi
