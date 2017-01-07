@@ -158,25 +158,20 @@ configure_mysql() {
 apt-get update 
 
 # Set the Server Timezone to CST
-echo "America/Vancouver" > /etc/timezone
-dpkg-reconfigure -f noninteractive tzdata
+#echo "America/Vancouver" > /etc/timezone
+#dpkg-reconfigure -f noninteractive tzdata
 
  
 
 # Install essential packages
-apt-get -y install zsh htop
+#apt-get -y install htop
 
 # Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
 echo "mysql-server-5.6 mysql-server/root_password password root" | sudo debconf-set-selections
 echo "mysql-server-5.6 mysql-server/root_password_again password root" | sudo debconf-set-selections
 apt-get -y install mysql-server-5.6
 
- 
-
-#sed -i 's/127\.0\.0\.1/0\.0\.0\.0/g' /etc/mysql/my.cnf
-#mysql -uroot -p -e 'USE mysql; UPDATE `user` SET `Host`="%" WHERE `User`="root" AND `Host`="localhost"; DELETE FROM `user` WHERE `Host` != "%" AND `User`="root"; FLUSH PRIVILEGES;'
-
-#service mysql restart
+service mysql restart
 
 
     if [ $iscentos -eq 0 ];
@@ -184,7 +179,8 @@ apt-get -y install mysql-server-5.6
         install_mysql_centos
     elif [ $isubuntu -eq 0 ];
     then
-echo installing #sudo apt-get update
+echo startingmysql
+service mysql restart
  
    fi
 
