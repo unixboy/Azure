@@ -154,7 +154,7 @@ configure_mysql() {
     chmod o+x "${MOUNTPOINT}/mysql"
     chown -R mysql:mysql "${MOUNTPOINT}/mysql"
  # Download and Install the Latest Updates for the OS
-apt-get update && apt-get upgrade -y
+apt-get update 
 
 # Set the Server Timezone to CST
 echo "America/Vancouver" > /etc/timezone
