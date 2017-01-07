@@ -171,8 +171,7 @@ echo "mysql-server-5.6 mysql-server/root_password password root" | sudo debconf-
 echo "mysql-server-5.6 mysql-server/root_password_again password root" | sudo debconf-set-selections
 apt-get -y install mysql-server-5.6
 
-service mysql restart
-
+ 
 
     if [ $iscentos -eq 0 ];
     then
