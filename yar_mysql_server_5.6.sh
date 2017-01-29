@@ -9,7 +9,7 @@
 
 NODEID=0
 NODEADDRESS=0.0.0.0
-MYCNFTEMPLATE=${3}
+MYCNFTEMPLATE="https://raw.githubusercontent.com/unixboy/Azure/master/my.cnf"
 RPLPWD=root
 ROOTPWD=root
 PROBEPWD=root
@@ -182,6 +182,8 @@ configure_network() {
 
 create_mycnf() {
     echo configtmp 
+    mv /etc/mysql/my.conf /etc/mysql/my.cnf.original
+    wget "${MYCNFTEMPLATE}" -O /etc/mysql/my.cnf
     #wget "${MYCNFTEMPLATE}" -O /etc/1my.cnf
     #sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/1my.cnf
     sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
