@@ -1,0 +1,33 @@
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+
+symbolic-links=0
+innodb_file_per_table = 1
+thread_concurrency = 8
+query_cache_size = 64M
+query_cache_limit = 4M
+thread_cache_size = 8
+myisam_sort_buffer_size = 64M
+read_rnd_buffer_size = 8M
+read_buffer_size = 2M
+sort_buffer_size = 2M
+table_cache = 1600
+table_definition_cache = 1600
+max_allowed_packet = 4M
+key_buffer = 1G
+interactive_timeout = 2
+wait_timeout = 5
+long_query_time = 1
+log_slow_queries = ON
+open_files_limit = 3200
+innodb_buffer_pool_size = 26M
+join_buffer_size = 4M
+tmp_table_size = 72M
+max_heap_table_size = 72M
+max_connections = 80
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
