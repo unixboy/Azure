@@ -1,0 +1,29 @@
+[client]
+port                                    = 3306
+socket                                  = /var/lib/mysql/mysql.sock
+default-character-set                   = utf8
+
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+symbolic-links=0
+
+port                                    = 3306
+tmpdir                                  = /tmp
+skip_external_locking
+
+max_connections                         = 151
+
+## Raise to 128M for 2GB RAM, 256M for 4GB RAM and 512M for 8GB RAM
+key_buffer                              = 64M
+
+## Raise to 128M for 2GB RAM, 256M for 4GB RAM and 512M for 8GB RAM
+innodb_buffer_pool_size                 = 64M
+
+## Misc Tunables (Don't touch these unless you know why you would want to touch these)##
+max_allowed_packet                      = 16M
+innodb_file_per_table
+
+## Changing this setting requires you to stop MySQL, move the current logs out of the way, and then starting MySQL ##
+innodb_log_file_size                    = 128M
