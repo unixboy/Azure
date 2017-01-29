@@ -4,7 +4,7 @@
 
 NODEID=${1}
 NODEADDRESS=${2}
-MYCNFTEMPLATE=${3}
+MYCNFTEMPLATE="https://raw.githubusercontent.com/unixboy/Azure/master/my.cnf"
 RPLPWD=${4}
 ROOTPWD=${5}
 PROBEPWD=${6}
@@ -176,10 +176,11 @@ configure_network() {
 }
 
 create_mycnf() {
+    mv /etc/my.conf /etc/my.cnf.original
     wget "${MYCNFTEMPLATE}" -O /etc/my.cnf
-    sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/my.cnf
-    sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
-    sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
+    #sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/my.cnf
+    #sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
+    #sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
 }
 
 install_mysql_ubuntu() {
