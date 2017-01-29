@@ -183,11 +183,11 @@ configure_network() {
 create_mycnf() {
     echo configtmp 
     #mv /etc/mysql/my.conf /etc/mysql/my.cnf.original
-    wget "${MYCNFTEMPLATE}" -O /etc/mysql/11my.cnf
+    wget "${MYCNFTEMPLATE}" -O /etc/mysql/my.cnf
     #wget "${MYCNFTEMPLATE}" -O /etc/1my.cnf
     #sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/1my.cnf
     #sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
-    #sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
+    sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
 }
 
 install_mysql_ubuntu() {
