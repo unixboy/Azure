@@ -176,8 +176,8 @@ configure_network() {
 }
 
 create_mycnf() {
-    mv /etc/my.conf /etc/my.cnf.original
-    wget "${MYCNFTEMPLATE}" -O /etc/my.cnf
+    mv /etc/mysql/my.conf /etc/mysql/my.cnf.original
+    wget "${MYCNFTEMPLATE}" -O /etc/mysql/my.cnf
     #echo “ulimit -SHn 65536” >>/etc/rc.local
     #echo “ulimit -SHu 65536” >>/etc/rc.local
     #sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/my.cnf
