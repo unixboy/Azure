@@ -3,7 +3,7 @@
 #Select-AzureRMSubscription -SubscriptionName  Production
 
 
-$imageURI="https://vmimage.blob.core.windows.net/vhd/osDisk.vhd"
+$imageURI="https://vmsimage.blob.core.windows.net/vhd/osDisk.vhd"
     $rgName = "powershell2temp" # must be the same as the storage account
     $location = "West US"
     $vnetName = " vnet"
