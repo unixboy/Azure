@@ -1,13 +1,13 @@
     
      
-#Select-AzureRMSubscription -SubscriptionName CALM-WFM-Production
+#Select-AzureRMSubscription -SubscriptionName  Production
 
 
-$imageURI="https://vmimage.blob.core.windows.net/vhd/osDisk.7b4e9865-70cd-4e14-83a2-d012e5d1a89a.vhd"
+$imageURI="https://vmimage.blob.core.windows.net/vhd/osDisk.vhd"
     $rgName = "powershell2temp" # must be the same as the storage account
     $location = "West US"
-    $vnetName = "powershell2temp-vnet"
-    $vnetRg = "powershell2temp"
+    $vnetName = " vnet"
+    $vnetRg = "temp"
 
     $cred = Get-Credential
     $storageAccName = "vmimagesbase" # must be the same as the image source
