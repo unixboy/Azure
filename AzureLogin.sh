@@ -24,3 +24,17 @@ $cred = new-object -typename System.Management.Automation.PSCredential `
      -argumentlist $clientID, $SecurePassword
 
 Add-AzureRmAccount -Credential $cred -Tenant "xxxx-xxxx-xxxx-xxxx" -ServicePrincipal
+
+
+
+Read-Host "Enter Password" -AsSecureString | ConvertTo-SecureString `
+-AsPlainText -Force | ConvertFrom-SecureString | Out-File "C:\AzurePassword.txt"
+
+
+# The azure account here must not be a Live ID.
+$username = "user@domain.com"
+$SecurePassword = Get-Content "C:\AzurePassword.txt" | ConvertTo-SecureString
+$cred = new-object -typename System.Management.Automation.PSCredential `
+     -argumentlist $username, $SecurePassword
+
+Login-AzureRmAccount -Credential $cred -SubscriptionId XX-XX-XX-XX-XX -TenantId XX-XX-XX-XX-XX 
